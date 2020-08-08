@@ -15,5 +15,3 @@ Usar o comando `cargo run --release`.
 
 Pressiona a Barra de espaço
 
-
-As hitboxes estão "viciadas" para tornar o jogo mais desafiante! Não foi intencional de todo...
