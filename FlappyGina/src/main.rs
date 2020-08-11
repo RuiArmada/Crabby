@@ -78,6 +78,24 @@ fn update_it(game: &mut GameState, ctx: &mut Context){
     let player = &game.player;
     let pipes = &mut game.pipes;
     for i in 0..pipes.len(){
-        
+        if pipes[i].set_score(&game.play_state){
+            game.score+= 1;
+            println!("{}",1);
+            game.sound_player.score();
+        }
+        //if player its a pipe or the ground
+        if(player.overlaps(&pipes[i]) || hits_ground(player)) && game.play_state.is_playing(){
+            game.sound_player.ouch();
+            game.play_state.set_dead(ggez::timer::time_since_start(ctx));
+        }
     }
+}
+
+
+fn hits_ground(player:&Box<PlayerEntity>) -> bool{
+    player.position.y > 135.0;
+}
+
+fn main(){
+    let resource
 }
