@@ -1,6 +1,8 @@
 
 /*------------------------------------------------------ Constant Definition/Library Calling ------------------------------------------------------*/
 
+
+
 use atlas::Sprite;
 use ggez::nalgebra::{Point2, Vector2};
 use ggez::{
@@ -28,7 +30,11 @@ use crate::game_state::GameState;
 pub const NUMBER_OF_TILES: u8 = 14;
 pub const RESTART_AFTER: Duration=std::time::Duration::from_secs(1);
 
-/*--------------------------------------------------------- Basic Function Implementation ---------------------------------------------------------*/
+
+
+/*------------------------------------------------------- Auxiliary Function Implementation -------------------------------------------------------*/
+
+
 
 impl EventHandler for GameState{
     fn update(&mut self, ctx: &mut Context) -> GameResult<()>{
@@ -92,10 +98,65 @@ fn update_it(game: &mut GameState, ctx: &mut Context){
 }
 
 
+
 fn hits_ground(player:&Box<PlayerEntity>) -> bool{
-    player.position.y > 135.0;
+    player.position.y > 135.0
 }
 
-fn main(){
-    let resource
+
+
+fn create_batch_sprite(ctx:&mut Context) -> SpriteBatch{
+    let image=graphics::Image::new(ctx, "/texture_atlas.png").unwrap();
+    let mut batch = graphics::spritebatch::SpriteBatch::new(image);
+    batch.set_filter(graphics::FilterMode::Nearest);
+    batch
 }
+
+
+
+impl PlayState {
+    fn is_playing(&self) -> bool{
+        *self==PlayState::Play
+    }
+    fn set_dead(&mut self,time:std::time::Duration){
+        *self=PlayState::Dead{
+            time
+        }
+    }
+    fn is_not_dead(&self) -> bool{
+        *self==PlayState::Play || *self==PlayState::StartScreen
+    }
+}
+
+
+
+fn draw_scores(score: i128, best_score: i128, ctx: &mut Context){
+    let fps_display = Text::new(format!("Best Score: {} Current Score: {}",best_score,score));
+
+    graphics::draw(
+        ctx,
+        &fps_display,
+        (Point2::new(10.0,10.0),graphics::WHITE),
+    );
+}
+
+
+
+/*---------------------------------------------------------- Main Function Implementation ---------------------------------------------------------*/
+
+
+
+fn main(){
+    let resource_dir = std::path::PathBuf::from("./resources");
+    let cb = window::build_window(resource_dir);
+    let (ctx,event_loop)=&mut cb.build().expect("GGEZ Error!");
+    let batch = create_batch_sprite(ctx);
+    let mut state = GameState::new(ctx,batch);
+
+    state.sound_player.begin();
+    event::run(ctx,event_loop,&mut state).unwrap();
+}
+
+
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------*/
