@@ -1,7 +1,7 @@
 /*------------------------------------------------------ Constant Definition/Library Calling ------------------------------------------------------*/
 
 
-use crate::{atlas};
+use crate::{gaia};
 use crate::entity::{PlayState,PipeEntity};
 use crate::atlas::Sprite;
 use ggez::nalgebra::{Point2,Vector2};
@@ -45,7 +45,7 @@ impl Physics{
 
 
 
-pub fn create_player(sprites: &atlas::Atlas) -> Box<PlayerEntity> {
+pub fn create_player(sprites: &gaia::Gaia) -> Box<PlayerEntity> {
     let crab0 = sprites.create_sprite("crab0.png");
     let sprite = crab0.clone;
     let crab1 = sprites.create_sprite("crab1.png");

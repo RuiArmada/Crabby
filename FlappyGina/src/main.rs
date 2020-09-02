@@ -3,7 +3,7 @@
 
 
 
-use atlas::Sprite;
+use gaia::Sprite;
 use ggez::nalgebra::{Point2, Vector2};
 use ggez::{
     event::EventHandler,
@@ -15,7 +15,7 @@ use ggez::{
 };
 
 mod entity;
-mod atlas;
+mod gaia;
 mod pipe;
 mod game_state;
 mod crab;
