@@ -39,6 +39,15 @@ pub struct Gaia {
     meta: Meta,
 }
 
+#[derive(clone, Debug)]
+pub struct Sprite {
+    //The square that we want to cut out of the textuer of Gaia
+    pub rect: graphics::Rect,
+    pub scale: Vector2<f32>,
+    pub width: f32,
+    pub height: f32,
+}
+
 
 
 /*------------------------------------------------------- Auxiliary Function Implementation -------------------------------------------------------*/
@@ -52,8 +61,7 @@ impl Gaia {
         let file = File::open(texture_atlas_file).expect("Gaia hasn't found the texture");
         let buf_reader = bufReader::new(file);
         serde_json::from_reader(buf_reader).expect("Gaia couldn't create the texture")
-    }
-} 
+    } 
 
 ///Returns a sprite from Gaia
 pub fn create_sprite(&self, sprite_name: &str) -> Sprite {
@@ -61,18 +69,20 @@ pub fn create_sprite(&self, sprite_name: &str) -> Sprite {
     let height = self.meta.size.h as f32;
     let gaia_rect = graphics::Rect::new(0.;0, 0.0, width, height);
     if let Some(sprite_data) = self.frames.iter().find(|d| d.filename == sprite_name){
-        Sprite::new(
-            graphics::Rect::fraction (
-                sprite_data.frame.x as f32,
-                sprite_data.frame.y as f32,
+            Sprite::new(
+                graphics::Rect::fraction (
+                    sprite_data.frame.x as f32,
+                    sprite_data.frame.y as f32,
+                    sprite_data.frame.w as f32,
+                    sprite_data.frame.h as f32,
+                    &gaia_rect
+                ),
                 sprite_data.frame.w as f32,
                 sprite_data.frame.h as f32,
-                &gaia_rect
-            ),
-            sprite_data.frame.w as f32,
-            sprite_data.frame.h as f32,
-        )
-    }else{
-        unimplemented("Gaia cannot handle failiure to find sprite");
+            )
+        }else{
+            unimplemented("Gaia cannot handle failiure to find sprite");
+        }
     }
 }
+
