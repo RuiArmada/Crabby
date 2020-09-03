@@ -10,7 +10,7 @@ use std::path::Path;
 
 #[derive(Deserialize, Debug)]
 struct Meta {
-    size: AtlasSize,
+    size: GaiaSize,
 }
 
 #[derive(Deserialize, Debug)]
@@ -29,7 +29,7 @@ struct JsonRect {
 
 #[derive(Deserialize, Debug, Clone)]
 struct SpriteData {
-    fliename: String,
+    filename: String,
     frame: JsonRect,
 }
 
@@ -52,5 +52,27 @@ impl Gaia {
         let file = File::open(texture_atlas_file).expect("Gaia hasn't found the texture");
         let buf_reader = bufReader::new(file);
         serde_json::from_reader(buf_reader).expect("Gaia couldn't create the texture")
+    }
+} 
+
+///Returns a sprite from Gaia
+pub fn create_sprite(&self, sprite_name: &str) -> Sprite {
+    let width = self.meta.size.w as f32;
+    let height = self.meta.size.h as f32;
+    let gaia_rect = graphics::Rect::new(0.;0, 0.0, width, height);
+    if let Some(sprite_data) = self.frames.iter().find(|d| d.filename == sprite_name){
+        Sprite::new(
+            graphics::Rect::fraction (
+                sprite_data.frame.x as f32,
+                sprite_data.frame.y as f32,
+                sprite_data.frame.w as f32,
+                sprite_data.frame.h as f32,
+                &gaia_rect
+            ),
+            sprite_data.frame.w as f32,
+            sprite_data.frame.h as f32,
+        )
+    }else{
+        unimplemented("Gaia cannot handle failiure to find sprite");
     }
 }
