@@ -86,3 +86,36 @@ pub fn create_sprite(&self, sprite_name: &str) -> Sprite {
     }
 }
 
+impl Sprite {
+    pub fn new(rect: graphics::Rect, width: f32, height f32) -> Self {
+        Self {
+            rect,
+            scale: Vector2::new(1.0, 1.0),
+            width,
+            height,
+        }
+    }
+
+    ///Adds a drawn command to the sprite
+    pub fn add_drawn_param(&mut self, pos: Point2<f32>) -> graphics::DrawParam {
+        self.draw_params(pos)
+    }
+
+    pub fn draw_params(&self, pos: Point2<f32>) -> graphics::DrawParam {
+        graphics::DrawParam::new()
+        .src(self.rect.clone())
+        .scale(self.scale)
+        .dest(pos)
+    }
+
+    ///Returns the bounding box for the sprite
+    pub fn get_bound_box(&self) -> graphics::Rect {
+        let mut r = graphics::Rect::new(0.0, 0.0, self.width, self.height);
+        r.scale(self.scale.x, self.scale.y);
+        r
+    }
+}
+
+
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------*/
