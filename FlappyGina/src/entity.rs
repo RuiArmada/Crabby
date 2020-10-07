@@ -102,24 +102,65 @@ impl PipeEntity {
 }
 
 impl PipeEntity {
+    pub fn update(
+        &mut self,
+        pipe_tracker: &mut PipeTracker,
+        state: &PlayState,
+        ) {
+        if PlayState::StartScreen == *state {
+            return;
+        }
 
+        //Moves the pipes towards the crab
+        let speed = pipe_velocity();
+        self.position += Vector2::new(spedd, 0.0);
+        //when the pipes po off the left side
+        //we put them back at right side to come again
+        self.recycle_passed_pipes(pipe_tracker);
+    }
+
+    pub fn draw(&mut self, ctx: &mut Context, batch: &mut SpriteBatch) -> GameResult {
+        self.draw_entity(ctx, batch)?;
+        Ok(())
+    }
+
+    fn draw_entity(&mut self, ctx: &mut Context, batch: &mut SpriteBatch) -> GameResult {
+        let s = &mut self.sprite;
+        batch.add(s.add_draw_param(self.position.clone()));
+        if !DEBUG {
+            return Ok(())
+        }
+
+        let rect = s.get_bound_box();
+        let mesh = graphics::Mesh::new_rectangle(
+            ctx,
+            graphics::DrawMode::stroke(1.0),
+            rect,
+            graphics::BLACK,
+            )?;
+
+        let p = graphics::DrawParam::new()
+            .dest(self.position.clone() * 4.0)
+            .scale(Vector2::new(4.0, 4.0));
+        graphics::draw(ctx, &mesh, p)?;
+        Ok(())
+    }
+
+    pub fn set_scored(&mut self, play_state : &PlayState) -> bool {
+        if self.position.x > 20.0 {
+            return false;
+        }
+
+        if self.is_ready_to_score() && PlayState::is_playing(&play_state) {
+            self.scoring_pipe = ScoringPipe::Scored;
+            return true;
+        }
+        false
+    }
 }
 
 
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
+/*------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 
 
