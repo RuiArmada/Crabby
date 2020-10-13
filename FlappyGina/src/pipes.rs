@@ -1,8 +1,7 @@
 /*------------------------------------------------------ Constant Definition/Library Calling ------------------------------------------------------*/
 
 
-
-use crate::entity::{PipeEntity, Scroll};
+use crate::entity::PipeEntity;
 use crate::Sprite;
 use noise::NoiseFn;
 use noise::Perlin;
@@ -27,15 +26,12 @@ pub struct PipeTracker {
 }
 
 
-
 /*------------------------------------------------------- Auxiliary Function Implementation -------------------------------------------------------*/
 
 
-
 impl PipeTracker {
-
     pub fn new() -> Self {
-        PipeTracker{
+        PipeTracker {
             pipes_seen: 1,
             top: VecDeque::new(),
             time: 0.0,
@@ -50,30 +46,31 @@ impl PipeTracker {
     }
 
     fn init_get_pipe_top(&mut self) -> f32 {
-        self.time = VERTICAL_GAP_DEVIANCE;
+        self.time += VERTICAL_GAP_DEVIANCE;
         let result = self.get_pipe_top();
         self.pipes_seen = 0;
         self.top.push_back(result);
         result
     }
 
-    //Returns the direction the pipe has to move 
+    // Returns the direction pipe has to move.
     pub fn get_pipe_difference(&mut self) -> f32 {
-        let las_pos = self.top.front().expect("Pipe wasn't placed").clone();
+        // need to go back by the number of integers of other pipes.
+
+        let last_pos = self.top.front().expect("Pipe wasn't placed!").clone();
         let now_pos = self.get_pipe_top();
+
         if self.pipes_seen == 10 {
             self.top.pop_front();
             self.top.push_back(now_pos);
             self.pipes_seen = 0;
             self.time += VERTICAL_GAP_DEVIANCE;
         }
-        now_pos = las_pos
+        now_pos - last_pos
     }
 }
 
-
-
-fn create_pipe_bottom (
+fn create_pipe_bottom(
     sprite_base: Sprite,
     sprite_top: Sprite,
     x: f32,
@@ -81,17 +78,27 @@ fn create_pipe_bottom (
     total_dist: f32,
 ) -> Vec<Box<PipeEntity>> {
     let top_height = sprite_top.height;
+
     let pipe_tip = create_pipe_tip(sprite_top, x, top, total_dist);
     let segments = SEGMENTS;
     let mut p = (0..segments)
-                .into_iter()
-                .map(|i| make_pipe_body(&sprite_base, x, top, total_dist, top_height, 1.0 * (i as f32)))
-                .collect::<Vec<Box<PipeEntity>>>();
+        .into_iter()
+        .map(|i| {
+            make_pipe_body(
+                &sprite_base,
+                x,
+                top,
+                total_dist,
+                top_height,
+                1.0 * (i as f32),
+            )
+        })
+        .collect::<Vec<Box<PipeEntity>>>();
+
     p.push(Box::new(pipe_tip));
+
     p
 }
-
-
 
 pub fn create_pipes(
     sprite_base: Sprite,
@@ -103,6 +110,7 @@ pub fn create_pipes(
     let width = sprite_top.width;
     let space_width = width * SPACE_MULTIPLIER;
     let total_dist = (width + space_width) * (number_of_pipes as f32);
+
     let gap = VERTICAL_GAP;
     (0..number_of_pipes)
         .into_iter()
@@ -123,14 +131,13 @@ pub fn create_pipes(
                 top - gap,
                 total_dist,
             ));
+
             bottom
         })
         .collect()
 }
 
-
-
-fn create_pipe_top (
+fn create_pipe_top(
     sprite_base: Sprite,
     sprite_top: Sprite,
     x: f32,
@@ -141,24 +148,33 @@ fn create_pipe_top (
     let top_height = -1.0 * sprite_top.height;
     let mut sprite_top = sprite_top;
     sprite_top.scale.y = -1.0;
+
     let mut pipe_tip = create_pipe_tip(sprite_top, x, top, total_dist);
+
     pipe_tip.scoring_pipe = ScoringPipe::ReadyToScore;
+
     let segments = SEGMENTS;
     let mut p = (0..segments)
-                .into_iter()
-                .map(|i| make_pipe_body(&sprite_base, x, top, total_dist, -1.0 * (i as f32)))
-                .collect::<Vec<Box<PipeEntity>>>();
+        .into_iter()
+        .map(|i| {
+            make_pipe_body(
+                &sprite_base,
+                x,
+                top,
+                total_dist,
+                top_height,
+                -1.0 * (i as f32),
+            )
+        })
+        .collect::<Vec<Box<PipeEntity>>>();
+
     p.push(Box::new(pipe_tip));
     p
 }
 
-
-
 pub fn pipe_velocity() -> f32 {
     -PIPE_SPEED
 }
-
-
 
 fn make_pipe_body(
     sprite_base: &Sprite,
@@ -166,24 +182,17 @@ fn make_pipe_body(
     top: f32,
     total_dist: f32,
     top_height: f32,
-    i: f32
+    i: f32,
 ) -> Box<PipeEntity> {
     let top = top + top_height + (sprite_base.height * i);
-    let mut pipe_body = PipeEntity::new_pipe(sprite_base.clone(), x, top, total_dist);
+    let pipe_body = PipeEntity::new_pipe(sprite_base.clone(), x, top, total_dist);
+
     Box::new(pipe_body)
 }
 
-
-
-fn create_pipe_tip(
-    sprite_top: Sprite,
-    x: f32,
-    top: f32,
-    scroll: f32
-) -> PipeEntity {
+fn create_pipe_tip(sprite_top: Sprite, x: f32, top: f32, scroll: f32) -> PipeEntity {
     PipeEntity::new_pipe(sprite_top, x, top, scroll)
 }
-
 
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------*/

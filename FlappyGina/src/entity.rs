@@ -1,15 +1,13 @@
-
 /*------------------------------------------------------ Constant Definition/Library Calling ------------------------------------------------------*/
 
 
-use crate::atlas::Sprite;
-use crate::pipe::{PipeTracker, pipe_velocity};
+use crate::gaia::Sprite;
+use crate::pipes::{pipe_velocity, PipeTracker};
 use ggez::graphics;
 use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::nalgebra::{Point2, Vector2};
 use ggez::Context;
 use ggez::GameResult;
-
 
 const DEBUG: bool = false;
 
@@ -44,34 +42,40 @@ pub struct PipeEntity {
 
 /*------------------------------------------------------- Auxiliary Function Implementation -------------------------------------------------------*/
 
+
 ///Everything that can be interacted with is an entity
 ///The player is an entity, as well as the pipes
 
 pub trait GameEntity {
-    fn update(&mut self, ctx: &mut Context, pipe_tracker: &mut PipeTracker, state: &PlayState) -> (GameResult, PlayState);
+    fn update(
+        &mut self,
+        ctx: &mut Context,
+        pipe_tracker: &mut PipeTracker,
+        state: &PlayState,
+    ) -> (GameResult, PlayState);
     fn draw(&mut self, ctx: &mut Context, batch: &mut SpriteBatch) -> GameResult;
-    fn overlaps(&self, other : &Self) -> bool;
-    fn set_score(&mut self, play_state : &PlayState) -> bool;
+    fn overlaps(&self, other: &Self) -> bool;
+    fn set_score(&mut self, play_state: &PlayState) -> bool;
 }
 
-
 impl PipeEntity {
-    pub fn new(sprite: Sprite, position: (f32, f32), scroller : f32) -> Self {
-
+    pub fn new(sprite: Sprite, position: (f32, f32), scroller: f32) -> Self {
         Self {
             sprite,
             position: Point2::new(position.0, position.1),
-            scroller: Scroll { jump_distance: scroller },
-            Scoring_pipe: ScoringPipe::Dormant,
+            scroller: Scroll {
+                jump_distance: scroller,
+            },
+            scoring_pipe: ScoringPipe::Dormant,
         }
     }
 
-    pub fn new_pipe(sprite: Sprite, x: f32, y: f32, scroll : f32) -> Self {
+    pub fn new_pipe(sprite: Sprite, x: f32, y: f32, scroll: f32) -> Self {
         Self::new(sprite, (x, y), scroll)
     }
 
     //Burns if there's no sprite
-    
+
     pub fn get_rect(&self) -> graphics::Rect {
         let mut rect = self.sprite.get_bound_box();
         rect.move_to(self.position.clone());
@@ -87,14 +91,13 @@ impl PipeEntity {
         if right_pos >= 0.0 {
             return;
         }
-
-        self.position.y += pipe_tracker.get_pipe_difference()
-        self.resetScoredPipes();
+        self.position.y += pipe_tracker.get_pipe_difference();
+        self.reset_scored_pipes();
         let scroll = &self.scroller;
         self.position.x += scroll.jump_distance;
     }
 
-    fn resetScoredPipes(&mut self) {
+    fn reset_scored_pipes(&mut self) {
         if self.scoring_pipe == ScoringPipe::Scored {
             self.scoring_pipe = ScoringPipe::ReadyToScore;
         }
@@ -102,18 +105,14 @@ impl PipeEntity {
 }
 
 impl PipeEntity {
-    pub fn update(
-        &mut self,
-        pipe_tracker: &mut PipeTracker,
-        state: &PlayState,
-        ) {
+    pub fn update(&mut self, pipe_tracker: &mut PipeTracker, state: &PlayState) {
         if PlayState::StartScreen == *state {
             return;
         }
 
         //Moves the pipes towards the crab
         let speed = pipe_velocity();
-        self.position += Vector2::new(spedd, 0.0);
+        self.position += Vector2::new(speed, 0.0);
         //when the pipes po off the left side
         //we put them back at right side to come again
         self.recycle_passed_pipes(pipe_tracker);
@@ -126,9 +125,9 @@ impl PipeEntity {
 
     fn draw_entity(&mut self, ctx: &mut Context, batch: &mut SpriteBatch) -> GameResult {
         let s = &mut self.sprite;
-        batch.add(s.add_draw_param(self.position.clone()));
+        batch.add(s.add_drawn_param(self.position.clone()));
         if !DEBUG {
-            return Ok(())
+            return Ok(());
         }
 
         let rect = s.get_bound_box();
@@ -137,7 +136,7 @@ impl PipeEntity {
             graphics::DrawMode::stroke(1.0),
             rect,
             graphics::BLACK,
-            )?;
+        )?;
 
         let p = graphics::DrawParam::new()
             .dest(self.position.clone() * 4.0)
@@ -146,7 +145,7 @@ impl PipeEntity {
         Ok(())
     }
 
-    pub fn set_scored(&mut self, play_state : &PlayState) -> bool {
+    pub fn set_scored(&mut self, play_state: &PlayState) -> bool {
         if self.position.x > 20.0 {
             return false;
         }
@@ -161,4 +160,3 @@ impl PipeEntity {
 
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------*/
-

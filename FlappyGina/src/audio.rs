@@ -1,26 +1,20 @@
 /*------------------------------------------------------ Constant Definition/Library Calling ------------------------------------------------------*/
 
 
-
-use ggez::{
-    audio::Source,
-    Context
-};
+use ggez::{audio::Source, Context};
 
 use ggez::audio::SoundSource;
 use rand::distributions::OpenClosed01;
 use rand::{thread_rng, Rng};
 
-pub struct Player{
+pub struct Player {
     pub score_sound: Source,
     pub ouch_sound: Source,
     pub begin_sound: Source,
 }
 
 
-
 /*------------------------------------------------------- Auxiliary Function Implementation -------------------------------------------------------*/
-
 
 
 impl Player {
@@ -36,21 +30,20 @@ impl Player {
         }
     }
 
-    pub fn begin(&mut self){
-        self.begin_sound.play_detached();
+    pub fn begin(&mut self) {
+        let _x = self.begin_sound.play_detached();
     }
 
-    pub fn ouch(&mut self){
-        self.ouch_sound.play_detached();
+    pub fn ouch(&mut self) {
+        let _x = self.ouch_sound.play_detached();
     }
 
-    pub fn score(&mut self){
+    pub fn score(&mut self) {
         let pitch: f32 = thread_rng().sample(OpenClosed01);
         self.score_sound.set_pitch(1.0 + pitch);
-        self.score_sound.play_detached();
+        let _x = self.score_sound.play_detached();
     }
 }
-
 
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------*/
