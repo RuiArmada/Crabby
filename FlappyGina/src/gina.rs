@@ -9,7 +9,7 @@ use ggez::nalgebra::{Point2, Vector2};
 use ggez::{graphics, Context, GameResult};
 
 const GRAVITY: f32 = 0.25;
-const JUMP_IMPULSE: f32 = 2.75;
+const JUMP_IMPULSE: f32 = 2.25;
 pub const SCREEN_TOP: f32 = -16.0;
 
 //Physics on the player

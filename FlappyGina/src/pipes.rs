@@ -13,7 +13,7 @@ const SEGMENTS: usize = 4;
 
 const PIPE_SPEED: f32 = 1.0;
 //Distance between pipes
-const SPACE_MULTIPLIER: f32 = 1.5;
+const SPACE_MULTIPLIER: f32 = 2.0;
 const VERTICAL_GAP: f32 = 57.0;
 pub const VERTICAL_GAP_DEVIANCE: f32 = 0.6;
 

@@ -1,5 +1,5 @@
 [package]
-name = "FlappyGina"
+name = "flappy_gina"
 version = "0.1.0"
 authors = ["RuiArmada <aepb.rui.98@gmail.com>"]
 edition = "2018"
