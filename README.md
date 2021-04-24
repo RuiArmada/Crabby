@@ -1,17 +1,19 @@
-# Flappy Gina
+# 🦀🦀 CRABBY 🦀🦀
 
-Biblioteca utilizada [GGEZ library](https://ggez.rs/).
+Used Library: [GGEZ library](https://ggez.rs/).
 
-Jogo baseado em "Flappy Bird" destinado a treinar a Linguagem de Programação Rust.
-
+Game based on "Flappy Bird - Game" destined to train Rust Programming Language
 
 
 ## Play game
 
-Clonar o repositório.
-Usar o comando `cargo run --release`.
+Clone the repository
+
+`cd [repo-dir]` to the repository location
+
+Run the Command `cargo run --release`.
 
 ## Controls
 
-Pressiona a Barra de espaço
+Press `SPACEBAR`
 
