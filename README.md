@@ -2,7 +2,7 @@
 
 Used Library: [GGEZ library](https://ggez.rs/).
 
-Game based on "Flappy Bird - Game" destined to train Rust Programming Language
+Game based on "Flappy Bird-Game" destined to train Rust Programming Language
 
 
 ## Play game
