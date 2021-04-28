@@ -7,11 +7,11 @@ Game based on "Flappy Bird-Game" destined to train Rust Programming Language
 
 ## Play game
 
-*Clone the repository
+*[Clone the repository]
 
-*`cd [repo-dir]` to the repository location
+*[`cd [repo-dir]` to the repository location]
 
-*Run the Command `cargo run --release`.
+*[Run the Command `cargo run --release`]
 
 ## Controls
 
